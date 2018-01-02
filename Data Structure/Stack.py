@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-  
 
 class Stack(object):
-    def __init__(self, data=None, max_len):
+    def __init__(self, data=None, max_len=16):
         if len(list(data))>max_len:
             raise IndexError("Data size out of range.")
         self._data = list(data) if data else []
