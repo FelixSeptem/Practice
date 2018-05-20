@@ -29,6 +29,7 @@ def find_min_2(array):
 def find_min_3(array):
     length = len(array)
     left, right = 0, length - 1
+    n = 1
     while n:
         mid = (left+right)/2
         front = 0
