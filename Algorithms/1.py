@@ -1,85 +1,125 @@
 # -*- coding:utf-8 -*-  
 
-# 最小ID
-# 寻找数组中未出现的最小非负整数,数组内包含无重复非负整数
-# 例如：
-# Input:
-# [18, 4, 8, 9, 16, 1, 14, 7, 19, 3, 0, 5, 2, 11, 6]
-# Output:
-# 10
+# 二叉搜索树基本数据结构
+class Node(object):
+    def __init__(self, key, left=None, right=None, parent=None):
+        self.key = key
+        self.left = left
+        self.right = right
+        self.parent = parent
 
-# O(n^2)
-def find_min_1(array):
-    x = 0
-    while True:
-        if x not in array:
-            return x
-        x += 1
-
-# O(n) 需要额外空间
-def find_min_2(array):
-    length = len(array)
-    x = [0 for _ in xrange(length)]
-    for i in array:
-        if i < length-1:
-            x[i] = 1
-    return x.index(0)
-
-# O(n) 不需要额外空间
-def find_min_3(array):
-    length = len(array)
-    left, right = 0, length - 1
-    n = 1
-    while n:
-        mid = (left+right)/2
-        front = 0
-        for tail in range(len(array)):
-            if array[tail] <= mid:
-                array[tail], array[front] = array[front], array[tail]
-                front += 1
-        if left == mid-left+1:
-            array = array[left:]
-            n = n-left
-            left = mid+1
+# 节点插入树
+def tree_insert(tree, node):
+    if not tree.root:
+        return node
+    pivot = tree.root
+    while pivot:
+        node_parent = pivot
+        if node.key < pivot.key:
+            pivot = pivot.left
         else:
-            n = front
-            right = mid
-    return left
+            pivot = pivot.right
+    node.parent = node_parent
+    if node.key < node_parent.key:
+        node_parent.left = node
+    elif node.key == node_parent.key:
+        node.left, node.right, node.parent = node_parent.left, node_parent.right, node_parent.parent
+    else:
+        node_parent.right = node
+    return tree.root
 
-# 丑数
-# 只包含2,3,5三个因子的自然数叫做丑数，找出第1500个丑数，第一个丑数是1
+# 中序遍历
+def in_order_walk(tree):
+    if tree:
+        in_order_walk(tree.left)
+        yield tree.key
+        in_order_walk(tree.right)
 
-def is_ugly(num):
-    while num%2==0:
-        num /= 2
-    while num%3==0:
-        num /= 3
-    while num%5==0:
-        num /= 5
-    return num==1
 
-def find_ugly_1(n):
-    start, count = 0, 0
-    if is_ugly(start):
-        count += 1
-        if count == n:
-            return start
-        start += 1
+def list_to_tree(arr):
+    tree = None
+    for x in arr:
+        tree = tree_insert(tree, x)
+    return tree
 
-def find_ugly_2(n):
-    if n <= 0:  
-        return 0  
-    if n == 1:  
-        return 1  
-    numbers = [1]  
-    i2, i3, i5 = 0, 0, 0  
-    for k in range(n-1):  
-        n2, n3, n5 = numbers[i2] * 2, numbers[i3] * 3, numbers[i5] * 5  
-        Min = min(n2, n3, n5)  
-        numbers.append(Min)  
-        i2 += (Min == n2)  
-        i3 += (Min == n3)  
-        i5 += (Min == n5)  
-    return Min  
 
-        
+def tree_to_str(t):
+    if t:
+        return "("+tree_to_str(t.left)+"), " + str(t.key) + ", (" + tree_to_str(t.right)+")"
+    else:
+        return "empty"
+
+
+def tree_search(t, node):
+    pivot = t.root
+    while pivot:
+        if node.key > pivot.key:
+            pivot = pivot.right
+        elif node.key == pivot.key:
+            return pivot
+        else:
+            pivot = pivot.left
+    return None
+
+
+def tree_min(t):
+    pivot = t.root
+    while pivot and pivot.left:
+        pivot = pivot.left
+    return pivot
+
+def tree_max(t):
+    pivot = t.root
+    while pivot and pivot.right:
+        pivot = pivot.right
+    return pivot
+
+def pred(node):
+    if not node: 
+        return node
+    if node.left: 
+        return tree_max(node.left)
+    p = node.parent
+    while p and p.right != node:
+        node = p
+        p = p.parent
+    return p 
+
+def succ(node):
+    if not node: 
+        return node
+    if node.right: 
+        return tree_min(node.right)
+    p = node.parent
+    while p and p.left != node:
+        node = p
+        p = p.parent
+    return p
+
+
+def remove_node(x):
+    if not x: 
+        return
+    x.parent = x.left = x.right = None
+
+
+def tree_delete(t, node):
+    if not node or not t:
+        return t
+    if (not node.left) and (not node.right):
+        remove_node(node)
+    if node.left and (not node.right):
+        node.left.parent = node.parent
+        remove_node(node)
+    elif node.right and (not node.right):
+        node.right.parent = node.parent
+        remove_node(node)
+    else:
+        replace_node = tree_max(node.left)
+        replace_node.left = node.left
+        replace_node.right = node.right
+        replace_node.parent = node.parent
+        tree_delete(t, replace_node)
+    return t
+
+
