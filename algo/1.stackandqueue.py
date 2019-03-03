@@ -42,7 +42,7 @@ class Queue:
         self.stackPush.append(item)
 
     def Poll():
-        if len(self.stackPush)==0 && len(self.stackPop)==0:
+        if len(self.stackPush)==0 and len(self.stackPop)==0:
             return None
         if len(self.stackPop)==0:
             while len(self.stackPush):
@@ -50,7 +50,7 @@ class Queue:
         return self.stackPop.pop()
     
     def Peek():
-        if len(self.stackPush)==0 && len(self.stackPop)==0:
+        if len(self.stackPush)==0 and len(self.stackPop)==0:
             return None
         if len(self.stackPop)==0:
             while len(self.stackPush):
@@ -107,12 +107,12 @@ def hanoi(n, left, mid, right):
 
 def move(n, left, mid, right, from, to):
     if n==1:
-        if from==mid || to==mid:
+        if from==mid or to==mid:
             print("Move 1 from {} to {}".format(from, to))
         else:
             print("Move 1 from {} to {}".format(from, mid))
             print("Move 1 from {} to {}".format(mid, to))
-    if from==mid || to==mid:
+    if from==mid or to==mid:
         another=(from==left || to==left)?right:left
         part1 = move(n-1, left, mid, right, from, another)
         part2 = 1
@@ -149,7 +149,7 @@ def getMaxWindow(arr, w):
     qmax = deque(maxlen=w)
     res = []
     for i in range(len(arr)):
-        while (not qmax) && arr[qmax[-1]]<arr[i]:
+        while (not qmax) and arr[qmax[-1]]<arr[i]:
             qmax.pop()
         qmax.append(i)
         if qmax[0] == i-w:
@@ -179,7 +179,7 @@ def maxRecFromBottom(height):
     maxArea = 0
     stack = []
     for i in range(len(height)):
-        while stack && height[i]<=height[stack[-1]]:
+        while stack and height[i]<=height[stack[-1]]:
             j = stack.pop()
             k = -1 if not stack else stack[-1]
             curArea = (i - k - 1)*height[j]
@@ -193,7 +193,7 @@ def maxRecFromBottom(height):
     return maxArea
 
 def maxRecSize(map):
-    if (not map) || (not map[0]):
+    if (not map) or (not map[0]):
         return 0
     maxArea = 0
     height = []
