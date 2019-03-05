@@ -108,3 +108,62 @@ def reverseDoubleList(h):
         pre = h
         h = next
     return pre
+
+'''
+反转部分单向链表
+给定一个单向列表头结点，两个整数from和to，反转from到to的部分
+例如：
+input:
+1->2->3->4->5->null, from=2, to=4
+output:
+1->4->3->2->5->null
+'''
+def reversePart(h, from, to):
+    if from<0 or from>=to:
+        return h
+    length = 0
+    n1 = h
+    fPre, tPos = None, None
+    while n.next!=None:
+        length++
+        fPre = n1 if from - 1 == length else fPre 
+        tPos = n1 if to + 1 == length else tPos
+        n1 = n1.next
+    if to>length:
+        return h
+    n1 = head if not fPre else fPre.next
+    n2 = n1.next
+    n1.next = tPos
+    next = None
+    while n2!=tPos:
+        next = n2.next
+        n2.next = n1
+        n1 = n2
+        n2 = next
+    if not fPre:
+        fPre.next = n1
+        return h
+    return n1
+
+'''
+环形单链表的约瑟夫环问题
+'''
+def getLive(i, m):
+    if i==1:
+        return 1
+    return (getLive(i-1, m) + m - 1)%i + 1
+
+def jKill(h, m):
+    if not h or h.next==h or m<1:
+        return h
+    cur = h.next
+    length = 1
+    while cur!=h:
+        length++
+        cur = cur.next
+    loc = getLive(length, m)
+    while --loc!=0:
+        h = h.next
+    h.next = h
+    return h
+
