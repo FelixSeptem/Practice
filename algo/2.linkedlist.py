@@ -167,3 +167,44 @@ def jKill(h, m):
     h.next = h
     return h
 
+'''
+判断一个链表是否为回文结构
+example:
+input:      output:
+1->2->1     true
+1->2->2->1  true
+1->2->3     false
+'''
+def isPalind(h):
+    if not h or not h.next:
+        return True
+    n1,n2 = h
+    # find middle node
+    while n2.next and n2.next.next:
+        n1 = n1.next
+        n2 = n2.next.next
+    n2 = n1.next
+    n1.next = None
+    while n2:
+        n3 = n2.next
+        n2.next = n1
+        n1 = n2
+        n2 = n3
+    n3 = n1
+    n2 = h
+    isPa = True
+    while n1 and n2:
+        if n1.value!=n2.value:
+            isPa = False
+            break
+        n1 = n1.next
+        n2 = n2.next
+    n1 = n3.next
+    n3.next = None
+    while n1:
+        n2 = n1.next
+        na.next = n3
+        n3 = n1
+        n1 = n2
+    return isPa
+
