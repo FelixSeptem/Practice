@@ -208,3 +208,171 @@ def isPalind(h):
         n1 = n2
     return isPa
 
+'''
+将单向链表按给定值划分为左边小中间相等右边大的三个部分
+给定链表头结点h,值pivot，将给定链表调整为左边小于，中间相等，右边大于的三部分
+'''
+def listPartition(h, pivot):
+    sH, sT = None, None
+    eH, sT = None, None
+    bH, bT = None, None
+    while head:
+        next = h.next
+        h.next = None
+        if h.value<pivot:
+            if not sH:
+                sH = h
+                sT = h
+            else:
+                sT.next = h
+                st = h
+        elif h.value==pivot:
+            if not eH:
+                eH = h
+                eT = h
+            else:
+                eT.next = h
+                eT = h
+        else:
+            if not bH:
+                bH = h
+                bT = h
+            else:
+                bT.next = h
+                bT = h
+        h = next
+    if sT:
+        sT.next = eH
+        eT = sT if not eT else eT
+    if eT:
+        eT.next = bH
+    if sH:
+        return sH
+    elif eH:
+        return eH
+    return bH
+
+'''
+单链表相加
+给定两个链表节点h1,h2，输出相加值的链表
+example:
+input: h1 9->3->7 h2 6->3
+output: 1->0->0->0
+'''
+def reverseList(h):
+    pre,next = None, None
+    while h:
+        n = h.next
+        h.next = pre
+        pre = h
+        h = next
+    return pre
+
+def addList(h1, h2):
+    h1, h2 = reverseList(h1), reverseList(h2)
+    ca, n1, n2 n = 0, 0, 0, 0
+    c1, c2, node, pre = h1, h2, None, None
+    while c1 or c2:
+        n1 = c1.value if c1 else 0
+        n2 = c2.value if c2 else 0
+        n = n1 + n2 + ca
+        pre = node
+        node = Node(n%10)
+        node.next = pre
+        ca = n/10
+        c1 = c1.next if c1 else None
+        c2 = c2.next if c2 else None
+    if ca==1:
+        pre = node
+        node = Node(1)
+        node.next = pre
+    reverseList(h1)
+    reverseList(h2)
+    return node
+
+'''
+给定两个单链表h1,h2，如果相交，返回相交节点
+'''
+# 判断链表是否有环，如果有，则返回入环的第一个节点
+def getLoopNode(h):
+    if not h or not h.next:
+        return None
+    n1, n2 = h.next, h.next.next
+    while n1!=n2:
+        if not n2.next or not n2.next.next:
+            return None
+        n2 = n2.next.next
+        n1 = n1.next
+    n2 = h
+    while n1!=n2:
+        n1 = n1.next
+        n2 = n2.next
+    return n1
+
+# 判断两个无环链表是否相交，相交则返回第一个节点
+def noLoop(h1, h2):
+    if not h1 or not h2:
+        return None
+    cur1, cur2 = h1, h2
+    length1, length2 = 0, 0
+    while cur1.next:
+        length1++
+        cur1 = cur1.next
+    while cur2.next:
+        length2++
+        cur2 = cur2.next
+    if cur1!=cur2:
+        return None
+    cur1, cur2 = h1, h2
+    if length1>length2:
+        for _ in range(length1-length2):
+            cur1 = cur1.next
+    elif length1<length2:
+        for _ in range(length2-length1):
+            cur2 = cur2.next
+    while cur1!=cur2:
+        cur1 = cur1.next
+        cur2 = cur2.next
+    return cur1
+
+# 判断两个有环链表是否相交，相交则返回第一个节点
+def bothLoop(h1, h2, l1, l2):
+    cur1, cur2 = None, None
+    if l1==l2:
+        cur1, cur2 = h1, h2
+        n = 0
+        while cur1!=l1:
+            n++
+            cur1 = cur1.next
+        while cur2!=l2:
+            n--
+            cur2 = cur2.next
+        cur1 = h1 if n>0 else h2
+        cur2 = h2 if cur1==h1 else h1
+        n = abs(n)
+        while n:
+            n--
+            cur1 = cur1.next
+        while cur1!=cur2:
+            cur1 = cur1.next
+            cur2 = cur2.next
+        return cur1
+    else:
+        cur1 = l1.next
+        while cur1!=l1:
+            if cur1==l2:
+                return l1
+            cur1 = cur1.next
+        return None
+
+# 综合上面代码
+def getIntersecrNode(h1, h2):
+    if not h1 or not h2:
+        return None
+    l1, l2 = getLoopNode(h1), getLoopNode(h2)
+    if not l1 and not l2:
+        return noLoop(h1, h2)
+    if l1 and l2:
+        return bothLoop(h1, h2, l1, l2)
+    return None
+
