@@ -376,3 +376,81 @@ def getIntersecrNode(h1, h2):
         return bothLoop(h1, h2, l1, l2)
     return None
 
+'''
+将单链表的每k个节点之间逆序
+example:
+input: 1->2->3->4->5->6->7->8->null K=3
+output: 3->2->1->6->5->4->7->8->null
+'''
+def reverseKNode(h, k):
+    if k<2:
+        return h
+    cur, start, pre, next = h, None, None, None
+    count = 1
+    while cur:
+        next = cur.next
+        if count==k:
+            start = h if not pre else pre.next
+            h = cur if not pre else h
+            resign(pre, start, cur, next)
+            pre = start
+            count = 0
+        count += 1
+        cur = next
+    return h
+
+def resign(left, start, end, right):
+    pre, cur, next = start, start.next, None
+    while cur!=right:
+        next = cur.next
+        cur.next = pre
+        pre = cur
+        cur = next
+    if left:
+        left.next = end
+    start.next = right
+
+'''
+删除无序单链表中值重复出现的节点
+example:
+input: 1->2->3->3->4->4->1->2->null  
+output: 1->2->3->4->null
+'''
+def removeRep(h):
+    if not h or not h.next:
+        return h
+    s = set(h.value)
+    pre = h
+    cur = h.next
+    while cur:
+        if cur.value in set:
+            pre.next = cur.next
+        else:
+            s.add(cur.value)
+            pre = cur
+        cur = cur.next
+    return h
+
+'''
+在单链表中删除给定值的节点
+给定链表头结点和固定值num，删除链表中所有值为num的节点
+input: 1->2->3->4->3->null num=3
+output: 1->2->4->null
+'''
+def removeNode(h, num):
+    if not h:
+        return h
+    while h:
+        if h.value!=num:
+            break
+        h = h.next
+    pre, cur = h, h
+    while cur:
+        if cur.value==num:
+            pre.next = cur.next
+        else:
+            pre = cur
+        cur = cur.next
+    return h
+        
+
