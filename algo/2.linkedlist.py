@@ -453,4 +453,115 @@ def removeNode(h, num):
         cur = cur.next
     return h
         
+'''
+将搜索二叉树转化成双向链表
+将搜索二叉树转化成有序的二叉链表
+'''
+from collections import deque
+def inOrderToQueue(head, queue):
+    if not head:
+        return
+    inOrderToQueue(h.left, queue)
+    queue.Add(head)
+    inOrderToQueue(h.right, queue)
+def convert(h):
+    queue = deque()
+    inOrderToQueue(h, queue)
+    if len(queue)==0:
+        return h
+    h = queue.pop()
+    pre = h
+    pre.left, cur = None, None
+    while queue:
+        cur = queue.pop()
+        pre.right = cur
+        cur.left = pre
+        pre = cur
+    pre.right = None
+    return h
 
+'''
+单链表选择排序
+'''
+def getsmallPre(h):
+    smallPre = None
+    small = h
+    pre = h
+    cur = h.next
+    while cur:
+        if cur.value<small.value:
+            smallPre = pre
+            small = cur
+        pre = cur
+        cur = cur.next
+    return smallPre
+def selectSort(h):
+    tail = None
+    cur = h
+    smallPre, small = None, None
+    while cur:
+        small = cur
+        smallPre = getsmallPre(cur)
+        if smallPre:
+            small = smallPre.next
+            smallPre.next = small.next
+        cur = cur.next if cur==small else cur
+        if tail:
+            h = small
+        else:
+            tail.next = small
+        tail = small
+    return h
+
+'''
+向有序环状单链表中插入节点，使其依然保持有序
+'''
+def  insertNode(h, value):
+    node=Node(value)
+    if not h:
+        node.next = node
+        return node
+    pre = h
+    cur = h.next
+    while  cur!=h:
+        if pre.value<=value and cur.value>=value:
+            break
+        pre = pre.next
+        cur = cur.next
+    pre.next = node
+    node.next = cur
+    if h.value<value:
+        return h
+    return node
+
+'''
+合并两个有序的单链表
+'''
+def mergeList(h1, h2):
+    if not h1:
+        return h2
+    if not h2:
+        return h1
+    cur1, cur2 =  h1, h2
+    pre, next = None, None
+    if h1.value<=h2.value:
+        h = h1.value
+        cur1 = cur1.next
+    else:
+        h = h2.value
+        cur2 = cur.next
+    while cur1 and cur2:
+        if cur1.value<=cur2.value:
+            pre = cur1
+            cur1 = cur1.next
+        else:
+            next = cur2.next
+            pre.next = cur2
+            cur2.next = cur1
+            pre = cur2
+            cur2 = next
+    if not cur1:
+        pre.next = cur2
+    else:
+        pre.next = cur1
+    return h
