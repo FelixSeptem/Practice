@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-  
 def bucket_sort(arr):
-    range_small. range_big = min(arr), max(arr)
+    range_small, range_big = min(arr), max(arr)
     temp = [0 for _ in range(range_small, range_big+1)]
     result = []
     for i in range arr:

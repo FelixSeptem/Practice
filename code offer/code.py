@@ -542,7 +542,7 @@ def inverse_pairs_core(arr, c, start, end):
     return left + right + num
 
 # 两个链表的第一个公共结点
-def find_first_commo0n_node(list1, list2):
+def find_first_common_node(list1, list2):
     length1, length2 = 0, 0
     tmp = list1
     while tmp:
@@ -1028,3 +1028,21 @@ def max_in_window(nums, size):
         result.append(nums[index[0]])
     return result
 
+# Trap Water Rain
+
+class Solution:
+    # @param A, a list of integers
+    # @return an integer
+    def trap(self, A):
+        leftmosthigh = [0 for i in range(len(A))]
+        leftmax = 0
+        for i in range(len(A)):
+            if A[i] > leftmax: leftmax = A[i]
+            leftmosthigh[i] = leftmax
+        sum = 0
+        rightmax = 0
+        for i in reversed(range(len(A))):
+            if A[i] > rightmax: rightmax = A[i]
+            if min(rightmax, leftmosthigh[i]) > A[i]:
+                sum += min(rightmax, leftmosthigh[i]) - A[i]
+        return sum
