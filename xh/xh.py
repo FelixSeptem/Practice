@@ -390,3 +390,510 @@ class Solution:
             if idx>=0 and idx!=i:
                 return [i, idx]
         return None
+
+"""
+19. Remove Nth Node From End of List
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+
+Follow up: Could you do this in one pass?
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+Example 2:
+
+Input: head = [1], n = 1
+Output: []
+Example 3:
+
+Input: head = [1,2], n = 1
+Output: [1]
+ 
+
+Constraints:
+
+The number of nodes in the list is sz.
+1 <= sz <= 30
+0 <= Node.val <= 100
+1 <= n <= sz
+"""
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head, n):
+        if head is None:
+            return head
+        # 针对尾删除
+        if n==1:
+            p = head
+            while p.next is not None and p.next.next is not None:
+                p = p.next
+            if p.next is not None:
+                p.next = None
+                return head
+            head = head.next
+            return head
+        # 快慢指针
+        slow, fast = head, head
+        for i in range(n):
+            if fast.next is None and i<n-1:
+                return head
+            fast = fast.next
+        if fast is None:
+            head = head.next 
+            return head
+        while fast.next is not None and slow.next is not None:
+            fast = fast.next
+            slow = slow.next
+        slow.next = slow.next.next
+        return head
+
+"""
+21. Merge Two Sorted Lists
+Merge two sorted linked lists and return it as a new sorted list. The new list should be made by splicing together the nodes of the first two lists.
+Input: l1 = [1,2,4], l2 = [1,3,4]
+Output: [1,1,2,3,4,4]
+Example 2:
+
+Input: l1 = [], l2 = []
+Output: []
+Example 3:
+
+Input: l1 = [], l2 = [0]
+Output: [0]
+ 
+
+Constraints:
+
+The number of nodes in both lists is in the range [0, 50].
+-100 <= Node.val <= 100
+Both l1 and l2 are sorted in non-decreasing order.
+"""
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeTwoLists(self, l1, l2):
+        if l1 is None:
+            return l2
+        if l2 is None:
+            return l1
+        new_head = None
+        if l1.val<l2.val:
+            new_head = l1
+            l1 = l1.next
+        else:
+            new_head = l2
+            l2 = l2.next
+        p = new_head
+        while l1 and l2:
+            if l1.val<l2.val:
+                p.next = l1
+                l1 = l1.next
+                p = p.next
+            else:
+                p.next = l2
+                l2 = l2.next
+                p = p.next
+        if l1 is not None:
+            p.next = l1
+        if l2 is not None:
+            p.next = l2
+        return new_head
+
+"""
+141. Linked List Cycle
+Given head, the head of a linked list, determine if the linked list has a cycle in it.
+
+There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
+
+Return true if there is a cycle in the linked list. Otherwise, return false.
+
+Follow up:
+
+Can you solve it using O(1) (i.e. constant) memory?
+
+ 
+
+Example 1:
+Input: head = [3,2,0,-4], pos = 1
+Output: true
+Explanation: There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).
+Example 2:
+Input: head = [1,2], pos = 0
+Output: true
+Explanation: There is a cycle in the linked list, where the tail connects to the 0th node.
+Example 3:
+Input: head = [1], pos = -1
+Output: false
+Explanation: There is no cycle in the linked list.
+Constraints:
+
+The number of the nodes in the list is in the range [0, 104].
+-105 <= Node.val <= 105
+pos is -1 or a valid index in the linked-list.
+"""
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head):
+        if head is None or head.next is None:
+            return False
+        slow, fast = head, head.next
+        while fast.next is not None and fast.next.next is not None:
+            if fast==slow:
+                return True
+            fast = fast.next.next
+            slow = slow.next
+        return False
+        
+"""
+142. Linked List Cycle II
+Given a linked list, return the node where the cycle begins. If there is no cycle, return null.
+
+There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
+
+Notice that you should not modify the linked list.
+
+Follow up:
+
+Can you solve it using O(1) (i.e. constant) memory?
+
+ 
+
+Example 1:
+Input: head = [3,2,0,-4], pos = 1
+Output: tail connects to node index 1
+Explanation: There is a cycle in the linked list, where tail connects to the second node.
+Example 2:
+Input: head = [1,2], pos = 0
+Output: tail connects to node index 0
+Explanation: There is a cycle in the linked list, where tail connects to the first node.
+Example 3:
+Input: head = [1], pos = -1
+Output: no cycle
+Explanation: There is no cycle in the linked list.
+ 
+
+Constraints:
+
+The number of the nodes in the list is in the range [0, 104].
+-105 <= Node.val <= 105
+pos is -1 or a valid index in the linked-list.
+"""
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def detectCycle(self, head):
+        if head is None or head.next is None:
+            return None
+        fast, slow = head, head
+        while fast is not None and fast.next is not None:
+            fast = fast.next.next
+            slow = slow.next
+            if fast == slow:
+                slow = head
+                while fast!=slow:
+                    fast = fast.next
+                    slow = slow.next
+                return fast
+        return None
+
+"""
+70. Climbing Stairs
+You are climbing a stair case. It takes n steps to reach to the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+Example 1:
+
+Input: 2
+Output: 2
+Explanation: There are two ways to climb to the top.
+1. 1 step + 1 step
+2. 2 steps
+Example 2:
+
+Input: 3
+Output: 3
+Explanation: There are three ways to climb to the top.
+1. 1 step + 1 step + 1 step
+2. 1 step + 2 steps
+3. 2 steps + 1 step
+ 
+
+Constraints:
+
+1 <= n <= 45
+"""
+class Solution:
+    def climbStairs(self, n):
+        if n<1:
+            return 1
+        dp = [1, 1]
+        for i in range(2, n+1):
+            dp.append(dp[i-1]+dp[i-2])
+        return dp[n]
+
+"""
+53. Maximum Subarray
+Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
+
+Follow up: If you have figured out the O(n) solution, try coding another solution using the divide and conquer approach, which is more subtle.
+
+ 
+
+Example 1:
+
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation: [4,-1,2,1] has the largest sum = 6.
+Example 2:
+
+Input: nums = [1]
+Output: 1
+Example 3:
+
+Input: nums = [0]
+Output: 0
+Example 4:
+
+Input: nums = [-1]
+Output: -1
+Example 5:
+
+Input: nums = [-2147483647]
+Output: -2147483647
+ 
+
+Constraints:
+
+1 <= nums.length <= 2 * 104
+-231 <= nums[i] <= 231 - 1
+"""
+class Solution:
+    def maxSubArray(self, nums):
+        if len(nums)==0:
+            return 0
+        if len(nums)==1:
+            return nums[0]
+        dp = []
+        for i, n in enumerate(nums):
+            if i==0:
+                dp.append(n)
+            else:
+                dp.append(max((dp[i-1]+n, n)))
+        return max(dp)
+            
+"""
+300. Longest Increasing Subsequence
+Given an unsorted array of integers, find the length of longest increasing subsequence.
+
+Example:
+
+Input: [10,9,2,5,3,7,101,18]
+Output: 4 
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4. 
+Note:
+
+There may be more than one LIS combination, it is only necessary for you to return the length.
+Your algorithm should run in O(n2) complexity.
+Follow up: Could you improve it to O(n log n) time complexity?
+"""
+class Solution:
+    def lengthOfLIS(self, nums):
+        tails = [0] * len(nums)
+        size = 0
+        for x in nums:
+            i, j = 0, size
+            while i != j:
+                m = (i + j) // 2
+                if tails[m] < x:
+                    i = m + 1
+                else:
+                    j = m
+            tails[i] = x
+            size = max(i + 1, size)
+        return size
+
+"""
+120. Triangle
+Given a triangle, find the minimum path sum from top to bottom. Each step you may move to adjacent numbers on the row below.
+
+For example, given the following triangle
+
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+The minimum path sum from top to bottom is 11 (i.e., 2 + 3 + 5 + 1 = 11).
+
+Note:
+
+Bonus point if you are able to do this using only O(n) extra space, where n is the total number of rows in the triangle.
+"""
+class Solution:
+    def minimumTotal(self, triangle):
+        if len(triangle)==0:
+            return 0
+        if len(triangle)==1:
+            return triangle[0][0]
+        for i, row in enumerate(triangle):
+            if i==0:
+                continue
+            for j, col in enumerate(row):
+                if j==0:
+                    triangle[i][j] += triangle[i-1][j]
+                elif j==len(row)-1:
+                    triangle[i][j] += triangle[i-1][j-1]
+                else:
+                    triangle[i][j] += min((triangle[i-1][j], triangle[i-1][j-1]))
+        return min(triangle[-1])
+
+"""
+64. Minimum Path Sum
+Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
+
+Note: You can only move either down or right at any point in time.
+
+Example:
+
+Input:
+[
+  [1,3,1],
+  [1,5,1],
+  [4,2,1]
+]
+Output: 7
+Explanation: Because the path 1→3→1→1→1 minimizes the sum.
+"""
+class Solution:
+    def minPathSum(self, grid):
+        rows = len(grid)
+        if rows==0:
+            return 0
+        cols = len(grid[0])
+        if rows==1:
+            return sum(grid[0])
+        if cols==1:
+            return sum([r[0] for r in grid])
+        dp = [[0 for _ in range(cols)] for _ in range(rows)]
+        dp[0][0] = grid[0][0]
+        for i in range(1, cols):
+            dp[0][i] = grid[0][i] + dp[0][i-1]
+        for j in range(1, rows):
+            dp[j][0] = grid[j][0] + dp[j-1][0]
+        for i in range(1, rows):
+            for j in range(1, cols):
+                dp[i][j] = min((dp[i-1][j], dp[i][j-1])) + grid[i][j]
+        return dp[-1][-1]
+
+"""
+198. House Robber
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security system connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+Given a list of non-negative integers representing the amount of money of each house, determine the maximum amount of money you can rob tonight without alerting the police.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,1]
+Output: 4
+Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+             Total amount you can rob = 1 + 3 = 4.
+Example 2:
+
+Input: nums = [2,7,9,3,1]
+Output: 12
+Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
+             Total amount you can rob = 2 + 9 + 1 = 12.
+ 
+
+Constraints:
+
+0 <= nums.length <= 100
+0 <= nums[i] <= 400
+"""
+class Solution:
+    def rob(self, nums):
+        if len(nums)==0:
+            return 0
+        if len(nums)==1:
+            return nums[0]
+        if len(nums)==2:
+            return max(nums)
+        dp = [nums[0], max((nums[0], nums[1]))]
+        for i, n in enumerate(nums[2:]):
+            idx = i+2
+            dp.append(max((dp[idx-1], dp[idx-2]+n)))
+        return dp[-1]
+
+"""
+344. Reverse String
+Write a function that reverses a string. The input string is given as an array of characters char[].
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+You may assume all the characters consist of printable ascii characters.
+
+ 
+
+Example 1:
+
+Input: ["h","e","l","l","o"]
+Output: ["o","l","l","e","h"]
+Example 2:
+
+Input: ["H","a","n","n","a","h"]
+Output: ["h","a","n","n","a","H"]
+"""
+class Solution:
+    def reverseString(self, s):
+        """
+        Do not return anything, modify s in-place instead.
+        """
+        left, right = 0, len(s)
+        while left<right:
+            s[left], s[right] = s[right], s[left]
+            left += 1
+            right -= 1
+        
+"""
+387. First Unique Character in a String
+Given a string, find the first non-repeating character in it and return its index. If it doesn't exist, return -1.
+
+Examples:
+
+s = "leetcode"
+return 0.
+
+s = "loveleetcode"
+return 2.
+ 
+
+Note: You may assume the string contains only lowercase English letters.
+"""
+class Solution:
+    def firstUniqChar(self, s):
+        times = [[] for _ in range(26)]
+        for i, ch in enumerate(s):
+            times[ord(ch)-97].append(i)
+        for i, t in enumerate(s):
+            if len(times[ord(t)-97])==1:
+                return i
+        return -1
+        
